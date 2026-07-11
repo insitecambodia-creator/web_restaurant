@@ -337,10 +337,237 @@ section {
   flex-direction: column;
 }
 
-.phone-screen img {
+/* ---------- shared "demo restaurant site" mockup ----------
+   Used inside both the hero phone screen and the live-example browser
+   frame. Everything is real HTML/CSS except the one hero photo, which is
+   an actual <img> request (cached once, reused in both placements). The
+   phone-screen version is the default (compact); .demo-page (the wider
+   live-example version) overrides sizing further down. */
+.demo-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--cream);
+  flex: none;
+}
+
+.demo-nav-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--charcoal);
+}
+
+.demo-nav > svg {
+  width: 18px;
+  height: 18px;
+  color: var(--charcoal);
+  flex: none;
+}
+
+.demo-nav-links,
+.demo-nav-book {
+  display: none;
+}
+
+.demo-hero {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 90px;
+  overflow: hidden;
+}
+
+.demo-hero img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.demo-hero-copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  padding: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 20, 23, 0.3),
+    rgba(6, 20, 23, 0.55)
+  );
+}
+
+.demo-hero-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+.demo-hero-tag {
+  font-size: 0.62rem;
+  color: var(--turmeric);
+  margin: 0;
+}
+
+.demo-hero-btn {
+  display: inline-block;
+  margin-top: 6px;
+  background: var(--chili);
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.demo-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px 4px;
+  font-size: 0.6rem;
+  color: var(--charcoal-soft);
+  flex: none;
+}
+
+.demo-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3f9d5c;
+  flex: none;
+}
+
+.demo-menu-grid {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  flex: none;
+}
+
+.demo-menu-item {
+  flex: 1;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+
+.demo-menu-item span {
+  font-size: 0.55rem;
+  color: var(--charcoal);
+  background: rgba(255, 255, 255, 0.75);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.demo-info {
+  margin: 6px 14px 14px;
+  padding: 12px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  flex: none;
+}
+
+.demo-info-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--charcoal);
+  margin: 0 0 4px;
+}
+
+.demo-info-sub,
+.demo-info-rating {
+  font-size: 0.6rem;
+  color: var(--charcoal-soft);
+  margin: 0 0 3px;
+}
+
+.demo-info-btn {
+  display: inline-block;
+  margin-top: 4px;
+  background: var(--chili);
+  color: #ffffff;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* ---------- .demo-page: wider variant used in the live-example frame ---------- */
+.demo-page .demo-nav {
+  padding: 14px 24px;
+}
+
+.demo-page .demo-nav-name {
+  font-size: 1.05rem;
+}
+
+.demo-page .demo-nav > svg {
+  display: none;
+}
+
+.demo-page .demo-nav-links {
+  display: flex;
+  gap: 20px;
+  font-size: 0.72rem;
+  color: var(--charcoal-soft);
+}
+
+.demo-page .demo-nav-book {
+  display: inline-block;
+  background: var(--chili);
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.demo-page .demo-hero {
+  flex: none;
+  height: 220px;
+}
+
+.demo-page .demo-hero-name {
+  font-size: 1.7rem;
+}
+
+.demo-page .demo-hero-tag {
+  font-size: 0.85rem;
+}
+
+.demo-page .demo-hero-btn {
+  font-size: 0.78rem;
+  padding: 10px 22px;
+  margin-top: 10px;
+}
+
+.demo-page .demo-menu-grid {
+  padding: 20px 24px;
+  gap: 16px;
+}
+
+.demo-page .demo-menu-item {
+  aspect-ratio: auto;
+  height: 90px;
+  align-items: flex-end;
+  padding-bottom: 8px;
+}
+
+.demo-page .demo-menu-item span {
+  font-size: 0.75rem;
+  padding: 3px 8px;
 }
 
 /* ---------- problem ---------- */
@@ -482,7 +709,7 @@ section {
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
-  background: #ece5d3;
+  background: #ddd7d2;
   border-bottom: 1px solid var(--line);
 }
 
@@ -504,11 +731,6 @@ section {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.example-frame img {
-  width: 100%;
-  height: auto;
 }
 
 .example-cta {

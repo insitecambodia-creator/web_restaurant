@@ -11,7 +11,7 @@ framework, no build step, deployable straight to Cloudflare Pages.
 | `index.html` | The full page: hero, problem, benefits, live example, pricing, how it works, about, FAQ, final CTA, footer. English only. |
 | `styles.css` | All styles. Mobile-first, CSS custom properties at the top of the file (`--chili`, `--turmeric`, `--cream`, `--charcoal`) for one-place re-theming. |
 | `script.js` | Telegram-link injection — reads one config object and points every "Message on Telegram" button/link at it. |
-| `images/` | Placeholder graphics (see below — all need replacing). |
+| `images/` | One real photo plus a couple of remaining placeholders (see below). |
 | `favicon.svg` | Site icon. |
 | `robots.txt` / `sitemap.xml` | Crawl config. |
 | `_headers` | Cloudflare Pages cache/security headers. |
@@ -33,29 +33,27 @@ If the handle ever changes, this one line is the only place to edit it.
 ### 2. Live demo URL
 Same `CONFIG.demoUrl` field above. Until it's filled in, the "Live example"
 section's link points at `#`. Once you have a real demo restaurant site
-live, drop its URL in and both the browser-mockup image and the "Visit the
-live demo →" text link will point to it.
-
-Also consider swapping `images/live-example-screenshot.svg` for an actual
-screenshot of that demo site (see image list below).
+live, drop its URL in and the "Visit the live demo →" text link (and the
+mockup itself) will point to it.
 
 ### 3. Photos (in `images/`)
-All current images are hand-drawn SVG placeholders so the page never shows
-a broken image, but they are **not real photos**. Replace with real WebP
-images, keep the same filenames (or update the `src` in `index.html`), and
-keep the `width`/`height` attributes matching the new file's actual pixel
-size so the layout doesn't shift on load:
 
-| File | Used for | Replace with |
+| File | Used for | Status |
 |---|---|---|
-| `images/hero-example-site.svg` | Phone mockup screen in the hero | A real screenshot of a client site or the demo site, portrait crop, ~276×598 |
-| `images/live-example-screenshot.svg` | "Live example" section | A real screenshot of the demo restaurant site, ~640×420 |
-| `images/about-photo-placeholder.svg` | About section | A real photo of you, square crop, ~280×280 (displayed at 140×140, so export at 2x for retina) |
+| `images/restaurantcambodia-hero1.webp` | Hero photo inside both the phone mockup and the "Live example" browser mockup (same file, fetched once and reused — see below) | Real, AI-generated interior photo. Swap for an actual client/demo restaurant photo whenever you have one, keeping the filename or updating the two `<img src>` references in `index.html`. |
+| `images/about-photo-placeholder.svg` | About section | Still a placeholder. Replace with a real photo of you, square crop, ~280×280 (displayed at 140×140, so export at 2x for retina). |
 | `images/og-image.png` | Open Graph / Facebook + Twitter share preview | Already a real 1200×630 PNG (generated, branded, on-theme), but swap it for a version with your actual name/photo once you have one. This is what shows up when the link is shared on Facebook — check it with a link-preview debugger before announcing the site. |
 
-The hero phone mockup and the live-example browser frame (nav dots, URL
-bar) are built with CSS in `styles.css` / `index.html` — you don't need an
-image for those parts, only for the screenshots inside them.
+The phone mockup and the live-example browser frame are both built as real
+HTML/CSS ("demo mini-webpage" markup: `.demo-nav`, `.demo-hero`,
+`.demo-menu-grid`, etc. in `styles.css`), not flat images — the hero photo
+is the *only* actual image request either one makes, and since both use
+the exact same `<img src="images/restaurantcambodia-hero1.webp">`, the
+browser fetches and caches it once and reuses it in both places. If you
+replace it, keep the `width="1536" height="1024"` attributes in sync with
+the new file's real pixel dimensions (or just remove them if the new photo
+has a different size — the layout uses `object-fit: cover` so any
+reasonably landscape photo will crop in nicely).
 
 ### 4. Personal details
 - **Name** — already set: "Heng Sovann Ratana" in the About section

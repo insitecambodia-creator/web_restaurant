@@ -167,10 +167,34 @@
       </div>
 
       <div class="hero-visual reveal-scale" style="transition-delay:.12s">
-        <!-- CSS-built device mockup of an example restaurant site, no image request needed. -->
+        <!-- CSS-built device mockup of an example restaurant site; only the hero
+             photo itself is a real image request, everything else is HTML/CSS. -->
         <div class="phone" role="img" aria-label="Phone preview of an example restaurant website, showing a hero photo, restaurant name, and a reserve table button">
           <div class="phone-screen">
-            <img src="images/hero-example-site.svg" width="276" height="598" alt="" loading="eager" fetchpriority="high" decoding="async" />
+            <div class="demo-nav">
+              <span class="demo-nav-name">Kroeung House</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </div>
+            <div class="demo-hero">
+              <img src="images/restaurantcambodia-hero1.webp" width="1536" height="1024" alt="" loading="eager" fetchpriority="high" decoding="async" />
+              <div class="demo-hero-copy">
+                <p class="demo-hero-name">Kroeung House</p>
+                <p class="demo-hero-tag">Modern Khmer Kitchen · Siem Reap</p>
+                <span class="demo-hero-btn">Reserve a table</span>
+              </div>
+            </div>
+            <div class="demo-status"><span class="demo-dot"></span>Open now · 11:00–21:00</div>
+            <div class="demo-menu-grid">
+              <div class="demo-menu-item" style="background:#a89c90"><span>Amok</span></div>
+              <div class="demo-menu-item" style="background:#928477"><span>Lok Lak</span></div>
+              <div class="demo-menu-item" style="background:#7a6f63"><span>Khmer BBQ</span></div>
+            </div>
+            <div class="demo-info">
+              <p class="demo-info-title">Siem Reap, Cambodia</p>
+              <p class="demo-info-sub">Wat Bo Road, near the Old Market</p>
+              <p class="demo-info-rating">★ 4.9 (128 Google reviews)</p>
+              <span class="demo-info-btn">Get directions</span>
+            </div>
           </div>
         </div>
       </div>
@@ -274,12 +298,33 @@
         <h2 class="section-title">A real example, not just a mockup</h2>
         <p class="section-sub">Here's what a finished site looks like. Click through and try it on your own phone.</p>
       </div>
-      <a class="example-frame reveal-scale" href="#" data-demo-link target="_blank" rel="noopener">
+      <a class="example-frame reveal-scale" href="#" data-demo-link target="_blank" rel="noopener" aria-label="Preview of a demo restaurant website">
         <div class="browser-chrome">
           <span></span><span></span><span></span>
           <span class="url">yourname.restaurant-cambodia.com</span>
         </div>
-        <img src="images/live-example-screenshot.svg" width="640" height="420" alt="Screenshot preview of a demo restaurant website" loading="lazy" decoding="async" />
+        <div class="demo-page">
+          <div class="demo-nav">
+            <span class="demo-nav-name">Kroeung House</span>
+            <nav class="demo-nav-links">
+              <span>Home</span><span>Menu</span><span>Location</span>
+            </nav>
+            <span class="demo-nav-book">Book</span>
+          </div>
+          <div class="demo-hero">
+            <img src="images/restaurantcambodia-hero1.webp" width="1536" height="1024" alt="" loading="lazy" decoding="async" />
+            <div class="demo-hero-copy">
+              <p class="demo-hero-name">Kroeung House</p>
+              <p class="demo-hero-tag">Modern Khmer Kitchen · Siem Reap</p>
+              <span class="demo-hero-btn">Reserve a table</span>
+            </div>
+          </div>
+          <div class="demo-menu-grid">
+            <div class="demo-menu-item" style="background:#a89c90"><span>Fish Amok</span></div>
+            <div class="demo-menu-item" style="background:#928477"><span>Beef Lok Lak</span></div>
+            <div class="demo-menu-item" style="background:#7a6f63"><span>Khmer BBQ</span></div>
+          </div>
+        </div>
       </a>
       <p class="example-cta">
         <span>Demo link coming soon.</span>
