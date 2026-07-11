@@ -5,23 +5,25 @@
    ========================================================================== */
 
 :root {
-  /* Palette — warm, food-adjacent. Chili red + turmeric on cream/charcoal. */
-  --cream: #fbf4e6;
-  --cream-card: #f4e9d3;
-  --white: #fffdf8;
-  --charcoal: #241c17;
-  --charcoal-soft: #4a3f36;
-  --chili: #c33a1f;
-  --chili-dark: #9c2d17;
-  --turmeric: #e2a52c;
-  --turmeric-dark: #b9821b;
-  --line: #e7d9bd;
-  --shadow: 0 12px 30px -14px rgba(36, 28, 23, 0.35);
+  /* Palette — moody navy/slate with a warm gold accent on cream/greige. */
+  --cream: #f7f4e3;
+  --cream-card: #cdc6b6;
+  --white: #ffffff;
+  --charcoal: #0d1419;
+  --charcoal-soft: #253a4a;
+  --chili: #e0a840;
+  --chili-dark: #b9821b;
+  --turmeric: #253a4a;
+  --turmeric-dark: #16232d;
+  --line: #e4decd;
+  --shadow: 0 12px 30px -14px rgba(13, 20, 25, 0.35);
 
-  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
-  --font-khmer: "Noto Sans Khmer", var(--font-body);
+  /* "Google Sans" isn't a redistributable web font — the stack tries it by
+     name (resolves on devices that already have it, e.g. ChromeOS/Android)
+     and falls back to Roboto, Google's open, metrically-close sibling. */
+  --font-display: "Google Sans", "Google Sans Text", Roboto, Arial,
+    sans-serif;
+  --font-body: "Google Sans Text", "Google Sans", Roboto, Arial, sans-serif;
 
   --radius-s: 10px;
   --radius-m: 16px;
@@ -29,11 +31,6 @@
 
   --max-w: 1120px;
   --sticky-bar-h: 64px;
-}
-
-html[lang="km"] body,
-body.lang-km {
-  font-family: var(--font-khmer);
 }
 
 /* ---------- reset ---------- */
@@ -79,10 +76,11 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.15;
   margin: 0 0 0.5em;
   color: var(--charcoal);
+  letter-spacing: -0.01em;
 }
 
 p {
@@ -151,7 +149,7 @@ section {
 
 .btn-primary {
   background: var(--chili);
-  color: var(--white);
+  color: var(--charcoal);
   box-shadow: var(--shadow);
 }
 
@@ -220,31 +218,6 @@ section {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.lang-toggle {
-  display: inline-flex;
-  border: 1.5px solid var(--charcoal);
-  border-radius: 999px;
-  overflow: hidden;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.lang-toggle button {
-  background: transparent;
-  border: none;
-  padding: 7px 12px;
-  cursor: pointer;
-  color: var(--charcoal);
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.82rem;
-}
-
-.lang-toggle button[aria-pressed="true"] {
-  background: var(--charcoal);
-  color: var(--cream);
 }
 
 .header-cta {
@@ -364,7 +337,7 @@ section {
 }
 
 .problem .section-sub {
-  color: #d8cabb;
+  color: var(--cream-card);
 }
 
 .problem-list {
@@ -387,7 +360,7 @@ section {
   width: 26px;
   height: 26px;
   flex: none;
-  color: var(--turmeric);
+  color: var(--chili);
 }
 
 .problem-item h3 {
@@ -398,7 +371,7 @@ section {
 
 .problem-item p {
   margin: 0;
-  color: #d8cabb;
+  color: var(--cream-card);
   font-size: 0.95rem;
 }
 
@@ -423,8 +396,8 @@ section {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: #fbeadc;
-  color: var(--chili);
+  background: #f5e6c8;
+  color: var(--chili-dark);
   margin-bottom: 14px;
 }
 
@@ -466,7 +439,7 @@ section {
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
-  background: #efe3cb;
+  background: #ece5d3;
   border-bottom: 1px solid var(--line);
 }
 
@@ -474,7 +447,7 @@ section {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #d9c7a4;
+  background: var(--cream-card);
 }
 
 .browser-chrome .url {
@@ -534,14 +507,14 @@ section {
 
 .price-card.featured .price-desc,
 .price-card.featured .price-features li {
-  color: #d8cabb;
+  color: var(--cream-card);
 }
 
 .price-badge {
   position: absolute;
   top: -13px;
   left: 24px;
-  background: var(--turmeric);
+  background: var(--chili);
   color: var(--charcoal);
   font-size: 0.72rem;
   font-weight: 800;
@@ -577,7 +550,7 @@ section {
 }
 
 .price-card.featured .price-amount span {
-  color: #d8cabb;
+  color: var(--cream-card);
 }
 
 .price-features {
@@ -603,7 +576,7 @@ section {
 }
 
 .price-card.featured .price-features svg {
-  color: var(--turmeric);
+  color: var(--chili);
 }
 
 .pricing-note {
@@ -641,7 +614,7 @@ section {
   height: 38px;
   border-radius: 50%;
   background: var(--chili);
-  color: var(--white);
+  color: var(--charcoal);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.1rem;
@@ -695,8 +668,8 @@ section {
 
 .about-signature {
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.3rem;
+  font-weight: 500;
+  font-size: 1.2rem;
   margin-top: 14px;
   color: var(--chili);
 }
@@ -752,34 +725,26 @@ section {
 
 /* ---------- final CTA band ---------- */
 .cta-band {
-  background: var(--chili);
-  color: var(--white);
+  background: var(--charcoal);
+  color: var(--cream);
   text-align: center;
 }
 
 .cta-band h2 {
-  color: var(--white);
+  color: var(--cream);
 }
 
 .cta-band p {
-  color: #ffe4da;
+  color: var(--cream-card);
   max-width: 50ch;
   margin-left: auto;
   margin-right: auto;
 }
 
-.cta-band .btn-primary {
-  background: var(--charcoal);
-}
-
-.cta-band .btn-primary:hover {
-  background: #14100d;
-}
-
 /* ---------- footer ---------- */
 .site-footer {
   background: var(--charcoal);
-  color: #d8cabb;
+  color: var(--cream-card);
   padding: 40px 0 32px;
 }
 
@@ -805,20 +770,20 @@ section {
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: #d8cabb;
+  color: var(--cream-card);
   font-size: 0.92rem;
 }
 
 .footer-links svg {
   width: 18px;
   height: 18px;
-  color: var(--turmeric);
+  color: var(--chili);
 }
 
 .footer-fine {
   margin-top: 20px;
   font-size: 0.8rem;
-  color: #a3937f;
+  color: #7c8b93;
 }
 
 /* ---------- sticky mobile CTA bar ---------- */
@@ -831,7 +796,7 @@ section {
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   background: var(--white);
   border-top: 1px solid var(--line);
-  box-shadow: 0 -8px 20px -12px rgba(36, 28, 23, 0.3);
+  box-shadow: 0 -8px 20px -12px rgba(13, 20, 25, 0.3);
 }
 
 .sticky-cta .btn {
@@ -909,7 +874,7 @@ section {
 }
 
 :focus-visible {
-  outline: 3px solid var(--turmeric-dark);
+  outline: 3px solid var(--chili-dark);
   outline-offset: 2px;
 }
 

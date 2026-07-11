@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" width="140" height="140" role="img" aria-labelledby="t3">
   <title id="t3">Photo placeholder — replace with a real photo of the site owner</title>
-  <circle cx="70" cy="70" r="70" fill="#e2a52c"/>
-  <circle cx="70" cy="58" r="24" fill="#fffdf8"/>
-  <path d="M20 132c6-30 30-46 50-46s44 16 50 46" fill="#fffdf8"/>
+  <circle cx="70" cy="70" r="70" fill="#e0a840"/>
+  <circle cx="70" cy="58" r="24" fill="#0d1419"/>
+  <path d="M20 132c6-30 30-46 50-46s44 16 50 46" fill="#0d1419"/>
 </svg>

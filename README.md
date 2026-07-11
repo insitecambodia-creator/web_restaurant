@@ -8,9 +8,9 @@ framework, no build step, deployable straight to Cloudflare Pages.
 
 | File | Purpose |
 |---|---|
-| `index.html` | The full page: hero, problem, benefits, live example, pricing, how it works, about, FAQ, final CTA, footer. |
+| `index.html` | The full page: hero, problem, benefits, live example, pricing, how it works, about, FAQ, final CTA, footer. English only. |
 | `styles.css` | All styles. Mobile-first, CSS custom properties at the top of the file (`--chili`, `--turmeric`, `--cream`, `--charcoal`) for one-place re-theming. |
-| `script.js` | Language toggle (EN default / Khmer), the `translations` object, Telegram-link injection, and on-demand loading of the Khmer font. |
+| `script.js` | Telegram-link injection — reads one config object and points every "Message on Telegram" button/link at it. |
 | `images/` | Placeholder graphics (see below — all need replacing). |
 | `favicon.svg` | Site icon. |
 | `robots.txt` / `sitemap.xml` | Crawl config. |
@@ -52,41 +52,22 @@ size so the layout doesn't shift on load:
 | `images/hero-example-site.svg` | Phone mockup screen in the hero | A real screenshot of a client site or the demo site, portrait crop, ~276×598 |
 | `images/live-example-screenshot.svg` | "Live example" section | A real screenshot of the demo restaurant site, ~640×420 |
 | `images/about-photo-placeholder.svg` | About section | A real photo of you, square crop, ~280×280 (displayed at 140×140, so export at 2x for retina) |
-| `images/og-image.png` | Open Graph / Facebook + Twitter share preview | Already a real 1200×630 PNG (generated, branded), but swap it for a version with your actual name/photo once you have one. This is what shows up when the link is shared on Facebook — check it with a link-preview debugger before announcing the site. |
+| `images/og-image.png` | Open Graph / Facebook + Twitter share preview | Already a real 1200×630 PNG (generated, branded, on-theme), but swap it for a version with your actual name/photo once you have one. This is what shows up when the link is shared on Facebook — check it with a link-preview debugger before announcing the site. |
 
 The hero phone mockup and the live-example browser frame (nav dots, URL
 bar) are built with CSS in `styles.css` / `index.html` — you don't need an
 image for those parts, only for the screenshots inside them.
 
 ### 4. Personal details
-- **Name** — `index.html`, About section (`data-i18n="about.title"` and
-  `about.signature"`, currently `[Your Name]`), also mirrored in
-  `script.js`'s `translations.en` object.
+- **Name** — `index.html`, About section (`Hi, I'm [Your Name].` and the
+  `— [Your Name], founder` signature).
 - **Phone number** — footer, currently `+855 12 345 678`
   (`tel:+855123456789` href in `index.html`).
 - **Facebook page** — footer link, currently
   `https://www.facebook.com/restaurantcambodia`, and in the JSON-LD
   `sameAs` array in `<head>`.
 
-### 5. Khmer translations
-`script.js` has a `translations` object with two language blocks, `en` and
-`km`. Every key exists in both; the `km` values are currently empty
-strings on purpose — the toggle already works, it just falls back to
-English until you fill Khmer text in. Fill in each `km` value with the
-matching translation (keep the key names as-is), e.g.:
-```js
-km: {
-  "hero.h1.pre": "ភ្ញៀវទេសចរកំពុងស្វែងរកអ្នកនៅលើ",
-  "hero.h1.accent": "Google",
-  ...
-}
-```
-Also fill in `META.km.title` and `META.km.description` near the bottom of
-the same object if you want the `<title>`/meta description to switch too.
-`Noto Sans Khmer` is only fetched the first time a visitor switches to
-Khmer, so English-first visitors never pay for that font.
-
-### 6. Domain-dependent SEO fields
+### 5. Domain-dependent SEO fields
 Once deployed, double check these all point at the real final domain
 (they're already set to `https://restaurant-cambodia.com/`, update only if
 you deploy elsewhere or add a custom domain later):
@@ -115,9 +96,9 @@ you deploy elsewhere or add a custom domain later):
    the site.
 6. Run Lighthouse (mobile) on the deployed URL — everything here was built
    for a 95+ mobile score (inlined critical CSS, no render-blocking JS,
-   zero external JS libraries, lazy-loaded below-the-fold images, deferred
-   Khmer font), but real photos in `images/` can affect it if they're
-   large — export them as WebP and keep them reasonably sized.
+   zero external JS libraries, lazy-loaded below-the-fold images), but real
+   photos in `images/` can affect it if they're large — export them as
+   WebP and keep them reasonably sized.
 
 ### A note on `_headers` caching
 `_headers` sets `styles.css`, `script.js`, `images/*`, and `favicon.svg` to
@@ -130,14 +111,31 @@ the Cloudflare dashboard, or rename the file and update the `<link>`/
 
 ## Design notes
 
-- Palette: cream/off-white background, charcoal text, chili-red primary
-  accent, turmeric secondary accent — CSS variables at the top of
-  `styles.css`.
-- Display font: **Fraunces** (headings), body font: **Inter**, Khmer font:
-  **Noto Sans Khmer** (lazy-loaded). All loaded via Google Fonts with
-  `preconnect` + non-blocking `<link rel="preload">` swap, so they never
-  block first paint.
-- No external JS libraries — `script.js` is vanilla JS, ~150 lines, no
+- **Palette** (from the brand swatches supplied): near-black navy `#0D1419`
+  (text, dark sections), slate `#253A4A` (secondary text/dark accents),
+  warm gold `#E0A840` (primary accent — buttons, links, icons), greige
+  `#CDC6B6` (alternate section backgrounds, muted text on dark), cream
+  `#F7F4E3` (page background). All as CSS custom properties at the top of
+  `styles.css` (`--chili` now holds the gold value, `--turmeric` the slate
+  value — kept the original variable *names* so the rest of the stylesheet
+  didn't need touching, only re-themed the values).
+- **Font: Google Sans everywhere.** "Google Sans" isn't a redistributable
+  web font — Google doesn't publish it on Google Fonts — so the stack
+  requests it *by name* first (`"Google Sans", "Google Sans Text"`), which
+  resolves automatically for any visitor who already has it installed
+  locally (ChromeOS, Android, Google Workspace apps), and falls back to
+  **Roboto** for everyone else — Google's own open font and Google Sans's
+  metrically-closest sibling. If you have a licensed copy of the actual
+  Google Sans font files, self-hosting them via `@font-face` in
+  `styles.css` (above the current `--font-display`/`--font-body`
+  declarations) will give a pixel-perfect match for every visitor instead
+  of relying on the fallback.
+- No external JS libraries — `script.js` is vanilla JS, ~20 lines, no
   dependencies.
+- English only — there's no language toggle. (An earlier version of this
+  page had an EN/Khmer switch; it's been removed. Some benefit/pricing
+  copy still mentions that the *delivered restaurant websites* support
+  English + Khmer visitors — that's a product feature being sold, not a
+  language option on this marketing page itself.)
 - Sticky bottom "Message on Telegram" bar shows on mobile only (below the
   960px breakpoint, where the header CTA is hidden instead).
