@@ -488,6 +488,37 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
         <span>Message me on Telegram</span>
       </a>
+
+      <div class="cta-divider"><span>or send the details directly</span></div>
+
+      <form class="lead-form" data-lead-form novalidate>
+        <div class="lead-form-row">
+          <div class="lead-field">
+            <label for="lf-restaurant">Restaurant name</label>
+            <input id="lf-restaurant" name="restaurantName" type="text" autocomplete="organization" required />
+          </div>
+          <div class="lead-field">
+            <label for="lf-name">Your name</label>
+            <input id="lf-name" name="ownerName" type="text" autocomplete="name" required />
+          </div>
+        </div>
+        <div class="lead-field">
+          <label for="lf-contact">Phone or Telegram</label>
+          <input id="lf-contact" name="contact" type="text" placeholder="+855 12 345 678 or @yourhandle" required />
+        </div>
+        <div class="lead-field">
+          <label for="lf-message">Message (optional)</label>
+          <textarea id="lf-message" name="message" rows="3"></textarea>
+        </div>
+        <div class="visually-hidden" aria-hidden="true">
+          <label for="lf-website">Leave this field blank</label>
+          <input id="lf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block lead-submit">
+          <span class="lead-submit-text">Send message</span>
+        </button>
+        <p class="lead-form-status" data-lead-status role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 

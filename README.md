@@ -10,11 +10,12 @@ framework, no build step, deployable straight to Cloudflare Pages.
 |---|---|
 | `index.html` | The full page: hero, problem, benefits, live example, pricing, how it works, about, FAQ, final CTA, footer. English only. |
 | `styles.css` | All styles. Mobile-first, CSS custom properties at the top of the file (`--chili`, `--turmeric`, `--cream`, `--charcoal`) for one-place re-theming. |
-| `script.js` | Telegram-link injection — reads one config object and points every "Message on Telegram" button/link at it. |
+| `script.js` | Telegram-link injection, scroll-reveal motion, and the lead-form submit handler — reads one config object at the top of the file. |
 | `images/` | One real photo plus a couple of remaining placeholders (see below). |
 | `favicon.svg` | Site icon. |
 | `robots.txt` / `sitemap.xml` | Crawl config. |
 | `_headers` | Cloudflare Pages cache/security headers. |
+| `n8n-lead-form-workflow.json` | Importable n8n workflow that receives the lead form's submissions, notifies you on Telegram, and logs them to a Google Sheet. Not deployed as part of the site itself — see "Lead form + n8n workflow" below. |
 
 ## Placeholders you still need to replace before launch
 
@@ -25,7 +26,8 @@ JSON-LD `sameAs` entry at `@PhnomPenhinfo`:
 ```js
 var CONFIG = {
   telegramHandle: "PhnomPenhinfo",
-  demoUrl: ""    // ← still needs the live demo site URL
+  demoUrl: "",         // ← still needs the live demo site URL
+  formWebhookUrl: ""   // ← still needs your n8n webhook URL, see below
 };
 ```
 If the handle ever changes, this one line is the only place to edit it.
@@ -106,6 +108,76 @@ version until the cache expires. After an edit, either purge the cache in
 the Cloudflare dashboard, or rename the file and update the `<link>`/
 `<script>` tag in `index.html` to bust the cache.
 
+## Lead form + n8n workflow
+
+The final section of the page ("Ready to be found on Google?") now has a
+small form under the Telegram button — restaurant name, your name, a phone
+or Telegram contact, and an optional message — for visitors who'd rather
+type than open Telegram. It's a plain HTML form; `script.js`'s
+`initLeadForm()` intercepts the submit, does a little client-side
+validation, and POSTs JSON to whatever URL you put in
+`CONFIG.formWebhookUrl`. Until that's set, submitting shows a friendly
+"this form isn't connected yet, message me on Telegram instead" message
+instead of failing silently.
+
+It also has a **honeypot** field (`website`) that's hidden from real
+visitors via the same `.visually-hidden` CSS class used for the skip link,
+with `tabindex="-1"` so keyboard users never land on it. If it's filled
+in, the JS assumes it's a bot, shows the normal "success" message, and
+never actually calls the webhook — and the n8n workflow re-checks the same
+field server-side, in case a bot posts straight to the webhook URL without
+running the page's JS at all.
+
+### Setting up the n8n side
+
+`n8n-lead-form-workflow.json` in this folder is a full workflow, ready to
+import:
+
+**Webhook → Format Lead → Validate Lead → (Telegram + Google Sheets) → Respond**
+
+1. In n8n: **Workflows → Import from File**, pick
+   `n8n-lead-form-workflow.json`. (Any n8n instance works — n8n Cloud or
+   self-hosted.)
+2. **Telegram credential**: message [@BotFather](https://t.me/BotFather)
+   on Telegram, run `/newbot`, and copy the bot token it gives you into a
+   new *Telegram API* credential in n8n. Then message your new bot once
+   from your own Telegram account (anything, e.g. "hi") so it has a chat
+   to reply into, and find your numeric chat ID by opening
+   `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` in a browser —
+   it's the `"chat":{"id": ...}` value. Paste that number into the
+   **Notify Owner on Telegram** node's `Chat ID` field (replacing
+   `REPLACE_WITH_YOUR_TELEGRAM_CHAT_ID`).
+3. **Google Sheets credential** (optional but included by default): create
+   a blank Google Sheet with a tab named `Leads`, connect a *Google Sheets
+   OAuth2* credential in n8n, and put the sheet's ID (the long string in
+   its URL between `/d/` and `/edit`) into the **Log Lead to Google
+   Sheet** node, replacing `REPLACE_WITH_YOUR_GOOGLE_SHEET_ID`. Don't want
+   a spreadsheet log? Just delete this node and reconnect **Notify Owner
+   on Telegram** straight to **Respond Success**.
+4. Click each node with a red "set up credential" warning and pick the
+   credential you just created (n8n won't reuse them automatically across
+   an import).
+5. **Activate** the workflow (top-right toggle). Open the **Lead Form
+   Webhook** node and copy its **Production URL** (not the Test URL —
+   that only works while the workflow editor is open).
+6. Paste that URL into `CONFIG.formWebhookUrl` in `script.js`, redeploy,
+   and submit the form once yourself to confirm the Telegram message and
+   sheet row both show up.
+
+If your n8n instance rejects the import because of a node version
+mismatch (n8n's node schemas shift between releases), the fix is usually
+to delete just that node and re-add the same node type fresh from the
+panel — the workflow's shape (five steps: webhook, format, validate,
+notify, respond) is simple enough to rebuild by hand in a few minutes if
+needed.
+
+### CORS
+Browsers block cross-origin `fetch()` calls unless the server allows it.
+n8n's Webhook node allows all origins by default; if you see a CORS error
+in the browser console after wiring up the real URL, open the **Lead Form
+Webhook** node → **Options** → **Allowed Origins (CORS)** and set it to
+`*` or `https://restaurant-cambodia.com`.
+
 ## Design notes
 
 - **Palette** (from the brand swatches supplied, a dusk-lake photo): near-
@@ -134,8 +206,8 @@ the Cloudflare dashboard, or rename the file and update the `<link>`/
   `styles.css` (above the current `--font-display`/`--font-body`
   declarations) will give a pixel-perfect match for every visitor instead
   of relying on the fallback.
-- No external JS libraries — `script.js` is vanilla JS, ~60 lines, no
-  dependencies.
+- No external JS libraries — `script.js` is vanilla JS, ~160 lines
+  (Telegram links, scroll-reveal, lead-form submit), no dependencies.
 - English only, with no mention of Khmer anywhere on the page. There's no
   language toggle (an earlier version had an EN/Khmer switch; removed),
   and the copy that used to advertise the *delivered restaurant websites*
