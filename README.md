@@ -130,7 +130,7 @@ the Cloudflare dashboard, or rename the file and update the `<link>`/
   `styles.css` (above the current `--font-display`/`--font-body`
   declarations) will give a pixel-perfect match for every visitor instead
   of relying on the fallback.
-- No external JS libraries — `script.js` is vanilla JS, ~20 lines, no
+- No external JS libraries — `script.js` is vanilla JS, ~60 lines, no
   dependencies.
 - English only — there's no language toggle. (An earlier version of this
   page had an EN/Khmer switch; it's been removed. Some benefit/pricing
@@ -139,3 +139,14 @@ the Cloudflare dashboard, or rename the file and update the `<link>`/
   language option on this marketing page itself.)
 - Sticky bottom "Message on Telegram" bar shows on mobile only (below the
   960px breakpoint, where the header CTA is hidden instead).
+- **Motion**: the hero phone mockup gently floats (CSS `@keyframes`, pure
+  transform, GPU-cheap). Sections/cards fade+rise into view on scroll via
+  a `.reveal`/`.reveal-scale` class pair — `script.js`'s
+  `initScrollReveal()` uses one shared `IntersectionObserver` to add
+  `.in-view` the first time each element crosses into the viewport, then
+  stops watching it (so it never re-fires on scroll-back). Cards/buttons
+  also get a hover lift + shadow. Everything respects
+  `prefers-reduced-motion: reduce` — the CSS media query at the bottom of
+  `styles.css` disables the float animation and all transitions, and
+  shows every `.reveal` element at full opacity immediately instead of
+  waiting on the observer.

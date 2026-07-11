@@ -143,6 +143,10 @@ section {
   line-height: 1.2;
 }
 
+.btn:hover {
+  transform: translateY(-2px);
+}
+
 .btn:active {
   transform: scale(0.98);
 }
@@ -155,6 +159,7 @@ section {
 
 .btn-primary:hover {
   background: var(--chili-dark);
+  box-shadow: 0 16px 30px -12px rgba(13, 20, 25, 0.45);
 }
 
 .btn-ghost {
@@ -294,6 +299,18 @@ section {
   border-radius: 42px;
   padding: 12px;
   box-shadow: var(--shadow);
+  animation: phone-float 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes phone-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(0.6deg);
+  }
 }
 
 .phone::before {
@@ -354,6 +371,14 @@ section {
   background: rgba(255, 253, 248, 0.06);
   border: 1px solid rgba(255, 253, 248, 0.14);
   border-radius: var(--radius-m);
+  transition: transform 0.25s ease, background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.problem-item:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 253, 248, 0.1);
+  border-color: var(--chili);
 }
 
 .problem-item svg {
@@ -387,6 +412,14 @@ section {
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
   padding: 22px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+  border-color: var(--chili);
 }
 
 .benefit-icon {
@@ -432,6 +465,12 @@ section {
   background: var(--white);
   max-width: 640px;
   margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.example-frame:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -16px rgba(13, 20, 25, 0.4);
 }
 
 .browser-chrome {
@@ -490,6 +529,12 @@ section {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.price-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow);
 }
 
 .price-card.featured {
@@ -498,6 +543,10 @@ section {
   border-color: var(--charcoal);
   box-shadow: var(--shadow);
   position: relative;
+}
+
+.price-card.featured:hover {
+  box-shadow: 0 20px 40px -16px rgba(13, 20, 25, 0.55);
 }
 
 .price-card.featured h3,
@@ -604,6 +653,16 @@ section {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.step:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.step:hover .step-number {
+  transform: scale(1.1);
 }
 
 .step-number {
@@ -619,6 +678,7 @@ section {
   font-weight: 600;
   font-size: 1.1rem;
   margin-bottom: 12px;
+  transition: transform 0.25s ease;
 }
 
 .step h3 {
@@ -686,6 +746,11 @@ section {
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
   padding: 4px 20px;
+  transition: border-color 0.2s ease;
+}
+
+.faq-item:hover {
+  border-color: var(--chili);
 }
 
 .faq-item summary {
@@ -803,6 +868,63 @@ section {
   font-size: 0.98rem;
 }
 
+/* ---------- scroll-reveal entry motion ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: translateY(16px) scale(0.94);
+  transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.reveal-scale.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+/* Staggered entry for items inside a grid — same rule applied per-container
+   so each grid's children fan in one after another instead of all at once. */
+.benefits-grid > .reveal:nth-child(2),
+.problem-list > .reveal:nth-child(2),
+.pricing-grid > .reveal:nth-child(2),
+.steps > .reveal:nth-child(2),
+.faq-list > .reveal:nth-child(2) {
+  transition-delay: 0.08s;
+}
+
+.benefits-grid > .reveal:nth-child(3),
+.problem-list > .reveal:nth-child(3),
+.pricing-grid > .reveal:nth-child(3),
+.steps > .reveal:nth-child(3),
+.faq-list > .reveal:nth-child(3) {
+  transition-delay: 0.16s;
+}
+
+.benefits-grid > .reveal:nth-child(4),
+.faq-list > .reveal:nth-child(4) {
+  transition-delay: 0.24s;
+}
+
+.benefits-grid > .reveal:nth-child(5),
+.faq-list > .reveal:nth-child(5) {
+  transition-delay: 0.32s;
+}
+
+.benefits-grid > .reveal:nth-child(6) {
+  transition-delay: 0.4s;
+}
+
 /* ---------- responsive ---------- */
 @media (min-width: 640px) {
   .benefits-grid {
@@ -868,7 +990,25 @@ section {
   }
 
   .btn,
-  .faq-icon {
+  .faq-icon,
+  .benefit-card,
+  .problem-item,
+  .example-frame,
+  .price-card,
+  .step,
+  .step-number,
+  .faq-item {
+    transition: none;
+  }
+
+  .phone {
+    animation: none;
+  }
+
+  .reveal,
+  .reveal-scale {
+    opacity: 1;
+    transform: none;
     transition: none;
   }
 }
