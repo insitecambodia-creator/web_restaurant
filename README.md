@@ -19,18 +19,22 @@ framework, no build step, deployable straight to Cloudflare Pages.
 
 ## Placeholders you still need to replace before launch
 
-### 1. Telegram handle — already set
+### 1. Telegram handle and lead form — already set
 `script.js` now points every "Message me on Telegram" button (header,
 hero, pricing ×3, sticky mobile bar, final CTA band, footer) and the
-JSON-LD `sameAs` entry at `@PhnomPenhinfo`:
+JSON-LD `sameAs` entry at `@PhnomPenhinfo`, and the lead form at the
+Formspree endpoint `https://formspree.io/f/mvzepopk`:
 ```js
 var CONFIG = {
   telegramHandle: "PhnomPenhinfo",
-  demoUrl: "",       // ← still needs the live demo site URL
-  formspreeId: ""    // ← still needs your Formspree form ID, see below
+  demoUrl: "",              // ← still needs the live demo site URL
+  formspreeId: "mvzepopk"
 };
 ```
-If the handle ever changes, this one line is the only place to edit it.
+If either ever changes, these are the only lines to edit — the Formspree
+ID is also set as the lead form's static `action` attribute in
+`index.html` (a no-JS fallback; see "Lead form" below), so update that
+too if you switch to a different Formspree form.
 
 ### 2. Live demo URL
 Same `CONFIG.demoUrl` field above. Until it's filled in, the "Live example"
@@ -113,12 +117,18 @@ the Cloudflare dashboard, or rename the file and update the `<link>`/
 The final section of the page ("Ready to be found on Google?") has a
 small form under the Telegram button — restaurant name, your name, a phone
 or Telegram contact, and an optional message — for visitors who'd rather
-type than open Telegram. It's a plain HTML form; `script.js`'s
-`initLeadForm()` intercepts the submit, does a little client-side
-validation, and POSTs it to [Formspree](https://formspree.io) using the
-form ID you put in `CONFIG.formspreeId`. Until that's set, submitting
-shows a friendly "this form isn't connected yet, message me on Telegram
-instead" message instead of failing silently.
+type than open Telegram. It's a plain HTML form pointed at your real
+Formspree endpoint (`https://formspree.io/f/mvzepopk`, both as the form's
+static `action` attribute and in `CONFIG.formspreeId`), so it works even
+if JavaScript fails to load (plain POST, browser redirects to Formspree's
+default "thanks" page). When JS *is* available — the normal case —
+`script.js`'s `initLeadForm()` intercepts the submit instead, does a
+little client-side validation, and POSTs via `fetch()` with
+`Accept: application/json` so the page can show an inline status message
+without navigating away. This is the same underlying request Formspree's
+own `@formspree/ajax` library sends; it's hand-rolled here instead of
+pulled in from their CDN to keep the site at zero external JS
+dependencies (see "Design notes" below).
 
 It also has a **honeypot** field (`_gotcha`, Formspree's own convention
 for this) that's hidden from real visitors via the same `.visually-hidden`
@@ -128,23 +138,24 @@ normal "success" message, and never actually calls Formspree — and
 Formspree re-checks the same field server-side too, in case a bot posts
 straight to the endpoint without running the page's JS at all.
 
-### Setting up Formspree
+### Formspree setup — already done
+The Formspree form is created and wired in (`mvzepopk`). What's left:
 
-1. Sign up at [formspree.io](https://formspree.io) (free plan: 50
-   submissions/month at time of writing — check
-   [formspree.io/plans](https://formspree.io/plans) for current limits)
-   and create a new form.
-2. Formspree gives you an endpoint like `https://formspree.io/f/mzzevorj`
-   — copy just the ID at the end (`mzzevorj`) into `CONFIG.formspreeId` in
-   `script.js`, redeploy.
-3. Submissions land as email to the address on your Formspree account by
-   default (**Settings → Notifications** on the form to change or add
-   recipients). Submit the form once yourself after deploying to confirm
-   the email arrives.
+1. Submissions land as email to the address on your Formspree account by
+   default — check **Settings → Notifications** on the form at
+   [formspree.io](https://formspree.io) to confirm/change recipients.
+2. Deploy, then submit the form once yourself to confirm the email
+   actually arrives (and check spam/junk the first time).
+3. Keep an eye on the free plan's submission limit (50/month at time of
+   writing — check [formspree.io/plans](https://formspree.io/plans) for
+   current limits); it stops accepting new submissions once you hit it
+   until the month resets or you upgrade.
 4. No CORS setup needed — Formspree's AJAX endpoint explicitly supports
    cross-origin `fetch()` requests out of the box.
 
-That's the whole setup — no credentials, no separate service to host.
+If you ever create a different Formspree form, update it in **two**
+places: `CONFIG.formspreeId` in `script.js`, and the form's `action`
+attribute in `index.html`.
 
 ### Optional: swap in the n8n workflow instead
 

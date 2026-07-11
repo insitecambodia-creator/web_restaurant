@@ -8,11 +8,11 @@
     telegramHandle: "PhnomPenhinfo",
     demoUrl: "", // TODO: paste the live demo restaurant site URL
     // Formspree form ID (the part after /f/ in the endpoint Formspree
-    // gives you, e.g. "mzzevorj" from https://formspree.io/f/mzzevorj).
+    // gives you, e.g. "mvzepopk" from https://formspree.io/f/mvzepopk).
     // See README for setup. Leave blank to disable the form's ability to
     // actually submit (it'll show a friendly error pointing people at
     // Telegram instead).
-    formspreeId: ""
+    formspreeId: "mvzepopk"
   };
 
   // ---- Telegram links -------------------------------------------------------
