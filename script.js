@@ -7,11 +7,12 @@
   var CONFIG = {
     telegramHandle: "PhnomPenhinfo",
     demoUrl: "", // TODO: paste the live demo restaurant site URL
-    // n8n production webhook URL for the lead form below (see
-    // n8n-lead-form-workflow.json / README for setup). Leave blank to
-    // disable the form's ability to actually submit (it'll show a
-    // friendly error pointing people at Telegram instead).
-    formWebhookUrl: ""
+    // Formspree form ID (the part after /f/ in the endpoint Formspree
+    // gives you, e.g. "mzzevorj" from https://formspree.io/f/mzzevorj).
+    // See README for setup. Leave blank to disable the form's ability to
+    // actually submit (it'll show a friendly error pointing people at
+    // Telegram instead).
+    formspreeId: ""
   };
 
   // ---- Telegram links -------------------------------------------------------
@@ -67,18 +68,27 @@
   }
 
   // ---- Lead form -------------------------------------------------------
-  // Posts JSON to the n8n webhook in CONFIG.formWebhookUrl. Includes a
-  // honeypot field ("website") that real visitors never see or fill in;
-  // if it's filled in, the request is almost certainly a bot, so we skip
-  // the network call entirely and just show the normal success message.
-  // The n8n workflow re-checks the honeypot server-side too, since a bot
-  // posting straight to the webhook URL would never run this JS at all.
+  // Submits to Formspree (https://formspree.io/f/<CONFIG.formspreeId>) as
+  // multipart form data with an Accept: application/json header, which
+  // tells Formspree to reply with JSON instead of redirecting the page —
+  // see https://help.formspree.io/articles/building-your-form/submit-forms-with-javascript-ajax.
+  // Formspree has its own built-in honeypot convention: a hidden field
+  // named "_gotcha" that it silently discards submissions from server-side.
+  // We also short-circuit client-side when it's filled in, so an obvious
+  // bot never even triggers the network request.
   function initLeadForm() {
     var form = document.querySelector("[data-lead-form]");
     if (!form) return;
 
     var status = form.querySelector("[data-lead-status]");
     var submitBtn = form.querySelector(".lead-submit");
+    var endpoint = CONFIG.formspreeId
+      ? "https://formspree.io/f/" + CONFIG.formspreeId
+      : "";
+
+    if (endpoint) {
+      form.setAttribute("action", endpoint);
+    }
 
     function setStatus(message, state) {
       status.textContent = message;
@@ -92,16 +102,11 @@
     form.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      var honeypot = form.elements.website ? form.elements.website.value : "";
-      var payload = {
-        restaurantName: form.elements.restaurantName.value.trim(),
-        ownerName: form.elements.ownerName.value.trim(),
-        contact: form.elements.contact.value.trim(),
-        message: form.elements.message.value.trim(),
-        website: honeypot
-      };
+      var honeypot = form.elements["_gotcha"] ? form.elements["_gotcha"].value : "";
+      var ownerName = form.elements.ownerName.value.trim();
+      var contact = form.elements.contact.value.trim();
 
-      if (!payload.ownerName || !payload.contact) {
+      if (!ownerName || !contact) {
         setStatus("Please fill in your name and a phone or Telegram contact.", "error");
         return;
       }
@@ -113,7 +118,7 @@
         return;
       }
 
-      if (!CONFIG.formWebhookUrl) {
+      if (!endpoint) {
         setStatus("This form isn't connected yet, please message me on Telegram instead.", "error");
         return;
       }
@@ -121,27 +126,26 @@
       submitBtn.disabled = true;
       setStatus("Sending...", null);
 
-      fetch(CONFIG.formWebhookUrl, {
+      fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
       })
         .then(function (response) {
-          if (!response.ok) throw new Error("Request failed");
-          return response.json().catch(function () {
-            return {};
-          });
-        })
-        .then(function (data) {
-          if (data && data.success === false) {
-            setStatus(
-              data.message || "Please fill in your name and a phone or Telegram contact.",
-              "error"
-            );
+          if (response.ok) {
+            setStatus("Thanks! I'll get back to you on Telegram soon.", "success");
+            form.reset();
             return;
           }
-          setStatus("Thanks! I'll get back to you on Telegram soon.", "success");
-          form.reset();
+          return response.json().catch(function () {
+            return null;
+          }).then(function (data) {
+            var message =
+              data && data.errors && data.errors.length
+                ? data.errors.map(function (e) { return e.message; }).join(", ")
+                : "Something went wrong, please message me on Telegram instead.";
+            setStatus(message, "error");
+          });
         })
         .catch(function () {
           setStatus("Something went wrong, please message me on Telegram instead.", "error");

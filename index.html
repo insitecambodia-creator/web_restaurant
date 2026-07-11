@@ -491,7 +491,8 @@
 
       <div class="cta-divider"><span>or send the details directly</span></div>
 
-      <form class="lead-form" data-lead-form novalidate>
+      <form class="lead-form" data-lead-form method="POST" novalidate>
+        <input type="hidden" name="_subject" value="New lead from restaurant-cambodia.com" />
         <div class="lead-form-row">
           <div class="lead-field">
             <label for="lf-restaurant">Restaurant name</label>
@@ -511,8 +512,8 @@
           <textarea id="lf-message" name="message" rows="3"></textarea>
         </div>
         <div class="visually-hidden" aria-hidden="true">
-          <label for="lf-website">Leave this field blank</label>
-          <input id="lf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          <label for="lf-gotcha">Leave this field blank</label>
+          <input id="lf-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
         </div>
         <button type="submit" class="btn btn-primary btn-block lead-submit">
           <span class="lead-submit-text">Send message</span>

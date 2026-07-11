@@ -15,7 +15,7 @@ framework, no build step, deployable straight to Cloudflare Pages.
 | `favicon.svg` | Site icon. |
 | `robots.txt` / `sitemap.xml` | Crawl config. |
 | `_headers` | Cloudflare Pages cache/security headers. |
-| `n8n-lead-form-workflow.json` | Importable n8n workflow that receives the lead form's submissions, notifies you on Telegram, and logs them to a Google Sheet. Not deployed as part of the site itself — see "Lead form + n8n workflow" below. |
+| `n8n-lead-form-workflow.json` | *Optional, not used by default.* An importable n8n workflow that receives lead-form submissions, notifies you on Telegram, and logs them to a Google Sheet — an alternative to Formspree's plain email notifications if you want more automation later. See "Lead form" below. |
 
 ## Placeholders you still need to replace before launch
 
@@ -26,8 +26,8 @@ JSON-LD `sameAs` entry at `@PhnomPenhinfo`:
 ```js
 var CONFIG = {
   telegramHandle: "PhnomPenhinfo",
-  demoUrl: "",         // ← still needs the live demo site URL
-  formWebhookUrl: ""   // ← still needs your n8n webhook URL, see below
+  demoUrl: "",       // ← still needs the live demo site URL
+  formspreeId: ""    // ← still needs your Formspree form ID, see below
 };
 ```
 If the handle ever changes, this one line is the only place to edit it.
@@ -108,75 +108,94 @@ version until the cache expires. After an edit, either purge the cache in
 the Cloudflare dashboard, or rename the file and update the `<link>`/
 `<script>` tag in `index.html` to bust the cache.
 
-## Lead form + n8n workflow
+## Lead form
 
-The final section of the page ("Ready to be found on Google?") now has a
+The final section of the page ("Ready to be found on Google?") has a
 small form under the Telegram button — restaurant name, your name, a phone
 or Telegram contact, and an optional message — for visitors who'd rather
 type than open Telegram. It's a plain HTML form; `script.js`'s
 `initLeadForm()` intercepts the submit, does a little client-side
-validation, and POSTs JSON to whatever URL you put in
-`CONFIG.formWebhookUrl`. Until that's set, submitting shows a friendly
-"this form isn't connected yet, message me on Telegram instead" message
-instead of failing silently.
+validation, and POSTs it to [Formspree](https://formspree.io) using the
+form ID you put in `CONFIG.formspreeId`. Until that's set, submitting
+shows a friendly "this form isn't connected yet, message me on Telegram
+instead" message instead of failing silently.
 
-It also has a **honeypot** field (`website`) that's hidden from real
-visitors via the same `.visually-hidden` CSS class used for the skip link,
-with `tabindex="-1"` so keyboard users never land on it. If it's filled
-in, the JS assumes it's a bot, shows the normal "success" message, and
-never actually calls the webhook — and the n8n workflow re-checks the same
-field server-side, in case a bot posts straight to the webhook URL without
-running the page's JS at all.
+It also has a **honeypot** field (`_gotcha`, Formspree's own convention
+for this) that's hidden from real visitors via the same `.visually-hidden`
+CSS class used for the skip link, with `tabindex="-1"` so keyboard users
+never land on it. If it's filled in, the JS assumes it's a bot, shows the
+normal "success" message, and never actually calls Formspree — and
+Formspree re-checks the same field server-side too, in case a bot posts
+straight to the endpoint without running the page's JS at all.
 
-### Setting up the n8n side
+### Setting up Formspree
 
-`n8n-lead-form-workflow.json` in this folder is a full workflow, ready to
-import:
+1. Sign up at [formspree.io](https://formspree.io) (free plan: 50
+   submissions/month at time of writing — check
+   [formspree.io/plans](https://formspree.io/plans) for current limits)
+   and create a new form.
+2. Formspree gives you an endpoint like `https://formspree.io/f/mzzevorj`
+   — copy just the ID at the end (`mzzevorj`) into `CONFIG.formspreeId` in
+   `script.js`, redeploy.
+3. Submissions land as email to the address on your Formspree account by
+   default (**Settings → Notifications** on the form to change or add
+   recipients). Submit the form once yourself after deploying to confirm
+   the email arrives.
+4. No CORS setup needed — Formspree's AJAX endpoint explicitly supports
+   cross-origin `fetch()` requests out of the box.
 
-**Webhook → Format Lead → Validate Lead → (Telegram + Google Sheets) → Respond**
+That's the whole setup — no credentials, no separate service to host.
+
+### Optional: swap in the n8n workflow instead
+
+`n8n-lead-form-workflow.json` is a complete, importable n8n workflow
+(**Webhook → Format Lead → Validate Lead → Telegram notification → Google
+Sheets log → Respond**) for later, if plain email notifications stop
+being enough and you want a Telegram ping plus a running spreadsheet of
+every lead instead. It's not wired up by default. To use it:
 
 1. In n8n: **Workflows → Import from File**, pick
-   `n8n-lead-form-workflow.json`. (Any n8n instance works — n8n Cloud or
-   self-hosted.)
+   `n8n-lead-form-workflow.json`. (n8n Cloud or self-hosted both work.)
 2. **Telegram credential**: message [@BotFather](https://t.me/BotFather)
-   on Telegram, run `/newbot`, and copy the bot token it gives you into a
-   new *Telegram API* credential in n8n. Then message your new bot once
-   from your own Telegram account (anything, e.g. "hi") so it has a chat
-   to reply into, and find your numeric chat ID by opening
-   `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` in a browser —
-   it's the `"chat":{"id": ...}` value. Paste that number into the
-   **Notify Owner on Telegram** node's `Chat ID` field (replacing
-   `REPLACE_WITH_YOUR_TELEGRAM_CHAT_ID`).
-3. **Google Sheets credential** (optional but included by default): create
-   a blank Google Sheet with a tab named `Leads`, connect a *Google Sheets
-   OAuth2* credential in n8n, and put the sheet's ID (the long string in
-   its URL between `/d/` and `/edit`) into the **Log Lead to Google
-   Sheet** node, replacing `REPLACE_WITH_YOUR_GOOGLE_SHEET_ID`. Don't want
-   a spreadsheet log? Just delete this node and reconnect **Notify Owner
-   on Telegram** straight to **Respond Success**.
+   on Telegram, run `/newbot`, and copy the bot token into a new
+   *Telegram API* credential in n8n. Message your new bot once from your
+   own account (anything, e.g. "hi") so it has a chat to reply into, then
+   find your numeric chat ID at
+   `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates` — it's the
+   `"chat":{"id": ...}` value. Paste it into the **Notify Owner on
+   Telegram** node's `Chat ID` field, replacing
+   `REPLACE_WITH_YOUR_TELEGRAM_CHAT_ID`.
+3. **Google Sheets credential**: create a blank sheet with a tab named
+   `Leads`, connect a *Google Sheets OAuth2* credential in n8n, and put
+   the sheet's ID (the long string in its URL between `/d/` and `/edit`)
+   into the **Log Lead to Google Sheet** node, replacing
+   `REPLACE_WITH_YOUR_GOOGLE_SHEET_ID`. Don't want the spreadsheet log?
+   Delete this node and reconnect **Notify Owner on Telegram** straight to
+   **Respond Success**.
 4. Click each node with a red "set up credential" warning and pick the
-   credential you just created (n8n won't reuse them automatically across
-   an import).
-5. **Activate** the workflow (top-right toggle). Open the **Lead Form
-   Webhook** node and copy its **Production URL** (not the Test URL —
-   that only works while the workflow editor is open).
-6. Paste that URL into `CONFIG.formWebhookUrl` in `script.js`, redeploy,
-   and submit the form once yourself to confirm the Telegram message and
-   sheet row both show up.
-
-If your n8n instance rejects the import because of a node version
-mismatch (n8n's node schemas shift between releases), the fix is usually
-to delete just that node and re-add the same node type fresh from the
-panel — the workflow's shape (five steps: webhook, format, validate,
-notify, respond) is simple enough to rebuild by hand in a few minutes if
-needed.
-
-### CORS
-Browsers block cross-origin `fetch()` calls unless the server allows it.
-n8n's Webhook node allows all origins by default; if you see a CORS error
-in the browser console after wiring up the real URL, open the **Lead Form
-Webhook** node → **Options** → **Allowed Origins (CORS)** and set it to
-`*` or `https://restaurant-cambodia.com`.
+   credential you just made (n8n doesn't reuse credentials across an
+   import automatically).
+5. **Activate** the workflow, open the **Lead Form Webhook** node, and
+   copy its **Production URL** (not the Test URL, which only works while
+   the editor is open).
+6. In `index.html`/`script.js`, switch the form to post there instead of
+   Formspree: change `initLeadForm()`'s `endpoint` to
+   `https://your-n8n-instance/webhook/restaurant-cambodia-lead`, and swap
+   the `fetch()` call's `body` from `new FormData(form)` back to a JSON
+   payload (`JSON.stringify({...})`), since this workflow's **Format
+   Lead** node expects `$json.body.<field>` — a JSON request body, not
+   multipart form data. Also rename the honeypot input back from
+   `_gotcha` to something like `website` if you'd rather it not collide
+   with Formspree's convention, and update the **Validate Lead** node's
+   condition to match.
+7. If n8n's import complains about a node version mismatch (schemas shift
+   between n8n releases), delete just that node and re-add the same node
+   type fresh from the panel — the workflow's shape (five steps: webhook,
+   format, validate, notify, respond) is simple to rebuild by hand.
+8. n8n's Webhook node allows all origins by default; if a CORS error shows
+   up in the browser console, open the **Lead Form Webhook** node →
+   **Options** → **Allowed Origins (CORS)** and set it to `*` or
+   `https://restaurant-cambodia.com`.
 
 ## Design notes
 
