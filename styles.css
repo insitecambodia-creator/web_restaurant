@@ -589,6 +589,7 @@ section {
   font-size: 2.2rem;
   color: var(--charcoal);
   line-height: 1;
+  margin: 0;
 }
 
 .price-amount span {
@@ -599,6 +600,17 @@ section {
 }
 
 .price-card.featured .price-amount span {
+  color: var(--cream-card);
+}
+
+.price-billed {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--charcoal-soft);
+  margin: 4px 0 0.75em;
+}
+
+.price-card.featured .price-billed {
   color: var(--cream-card);
 }
 
