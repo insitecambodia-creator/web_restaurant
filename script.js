@@ -4,7 +4,7 @@
   // ---- Central config -----------------------------------------------------
   // Edit these two lines to point every CTA at the real Telegram handle.
   var CONFIG = {
-    telegramHandle: "restaurant_cambodia", // TODO: replace with the real handle
+    telegramHandle: "PhnomPenhinfo",
     demoUrl: "" // TODO: paste the live demo restaurant site URL
   };
 

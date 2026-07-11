@@ -16,20 +16,19 @@ framework, no build step, deployable straight to Cloudflare Pages.
 | `robots.txt` / `sitemap.xml` | Crawl config. |
 | `_headers` | Cloudflare Pages cache/security headers. |
 
-## Placeholders you need to replace before launch
+## Placeholders you still need to replace before launch
 
-Everything below is a stand-in. Nothing here is real business data.
-
-### 1. Telegram handle (most important — every CTA depends on this)
-Edit **one line** in `script.js`:
+### 1. Telegram handle — already set
+`script.js` now points every "Message me on Telegram" button (header,
+hero, pricing ×3, sticky mobile bar, final CTA band, footer) and the
+JSON-LD `sameAs` entry at `@PhnomPenhinfo`:
 ```js
 var CONFIG = {
-  telegramHandle: "restaurant_cambodia", // ← put your real @handle here
-  demoUrl: ""                             // ← paste the live demo site URL here
+  telegramHandle: "PhnomPenhinfo",
+  demoUrl: ""    // ← still needs the live demo site URL
 };
 ```
-All "Message me on Telegram" buttons (header, hero, pricing ×3, sticky
-mobile bar, final CTA band, footer) read from this one constant.
+If the handle ever changes, this one line is the only place to edit it.
 
 ### 2. Live demo URL
 Same `CONFIG.demoUrl` field above. Until it's filled in, the "Live example"
@@ -59,13 +58,13 @@ bar) are built with CSS in `styles.css` / `index.html` — you don't need an
 image for those parts, only for the screenshots inside them.
 
 ### 4. Personal details
-- **Name** — `index.html`, About section (`Hi, I'm [Your Name].` and the
-  `— [Your Name], founder` signature).
+- **Name** — already set: "Heng Sovann Ratana" in the About section
+  heading and signature in `index.html`.
 - **Phone number** — footer, currently `+855 12 345 678`
-  (`tel:+855123456789` href in `index.html`).
+  (`tel:+855123456789` href in `index.html`) — still a placeholder.
 - **Facebook page** — footer link, currently
   `https://www.facebook.com/restaurantcambodia`, and in the JSON-LD
-  `sameAs` array in `<head>`.
+  `sameAs` array in `<head>` — still a placeholder.
 
 ### 5. Domain-dependent SEO fields
 Once deployed, double check these all point at the real final domain
@@ -132,11 +131,13 @@ the Cloudflare dashboard, or rename the file and update the `<link>`/
   of relying on the fallback.
 - No external JS libraries — `script.js` is vanilla JS, ~60 lines, no
   dependencies.
-- English only — there's no language toggle. (An earlier version of this
-  page had an EN/Khmer switch; it's been removed. Some benefit/pricing
-  copy still mentions that the *delivered restaurant websites* support
-  English + Khmer visitors — that's a product feature being sold, not a
-  language option on this marketing page itself.)
+- English only, with no mention of Khmer anywhere on the page. There's no
+  language toggle (an earlier version had an EN/Khmer switch; removed),
+  and the copy that used to advertise the *delivered restaurant websites*
+  supporting English + Khmer visitors (hero trust badge, a benefit card,
+  two pricing feature bullets) has been swapped out: the hero badge now
+  reads "One flat yearly price", and the benefit card is now "Direct
+  support, not a ticket queue".
 - Sticky bottom "Message on Telegram" bar shows on mobile only (below the
   960px breakpoint, where the header CTA is hidden instead).
 - **Motion**: the hero phone mockup gently floats (CSS `@keyframes`, pure
