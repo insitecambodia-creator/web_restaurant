@@ -110,14 +110,21 @@ the Cloudflare dashboard, or rename the file and update the `<link>`/
 
 ## Design notes
 
-- **Palette** (from the brand swatches supplied): near-black navy `#0D1419`
-  (text, dark sections), slate `#253A4A` (secondary text/dark accents),
-  warm gold `#E0A840` (primary accent — buttons, links, icons), greige
-  `#CDC6B6` (alternate section backgrounds, muted text on dark), cream
-  `#F7F4E3` (page background). All as CSS custom properties at the top of
-  `styles.css` (`--chili` now holds the gold value, `--turmeric` the slate
-  value — kept the original variable *names* so the rest of the stylesheet
-  didn't need touching, only re-themed the values).
+- **Palette** (from the brand swatches supplied, a dusk-lake photo): near-
+  black deep teal `#061417` (text, darkest sections), deep navy `#012C3C`
+  (secondary text, alt dark tone), steel blue `#285669` (primary accent:
+  buttons, links, icons on light backgrounds), warm taupe `#928477`
+  (alternate section backgrounds, muted text on dark), light greige
+  `#C6BFBB` (page background). All as CSS custom properties at the top of
+  `styles.css` (`--chili` now holds the steel-blue value, `--turmeric` a
+  lighter tint of it used specifically for icons/labels sitting on the
+  dark `--charcoal` sections — kept the original variable *names* so the
+  rest of the stylesheet didn't need touching, only re-themed the values).
+  Note this palette's accent (`--chili`) is a mid-tone rather than a light
+  "pop" color like a previous gold accent was, so buttons/badges built on
+  it use light text (white), not dark text, to stay readable, and a
+  separate lighter `--turmeric` tint covers icons on dark backgrounds
+  where the base accent alone wouldn't have enough contrast.
 - **Font: Google Sans everywhere.** "Google Sans" isn't a redistributable
   web font — Google doesn't publish it on Google Fonts — so the stack
   requests it *by name* first (`"Google Sans", "Google Sans Text"`), which

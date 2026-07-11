@@ -5,18 +5,18 @@
    ========================================================================== */
 
 :root {
-  /* Palette — moody navy/slate with a warm gold accent on cream/greige. */
-  --cream: #f7f4e3;
-  --cream-card: #cdc6b6;
+  /* Palette — moody dusk-lake blues with a warm taupe/greige neutral. */
+  --cream: #c6bfbb;
+  --cream-card: #928477;
   --white: #ffffff;
-  --charcoal: #0d1419;
-  --charcoal-soft: #253a4a;
-  --chili: #e0a840;
-  --chili-dark: #b9821b;
-  --turmeric: #253a4a;
-  --turmeric-dark: #16232d;
-  --line: #e4decd;
-  --shadow: 0 12px 30px -14px rgba(13, 20, 25, 0.35);
+  --charcoal: #061417;
+  --charcoal-soft: #012c3c;
+  --chili: #285669;
+  --chili-dark: #1c3c49;
+  --turmeric: #6f95a6;
+  --turmeric-dark: #012c3c;
+  --line: #ddd9d6;
+  --shadow: 0 12px 30px -14px rgba(6, 20, 23, 0.35);
 
   /* "Google Sans" isn't a redistributable web font — the stack tries it by
      name (resolves on devices that already have it, e.g. ChromeOS/Android)
@@ -153,13 +153,13 @@ section {
 
 .btn-primary {
   background: var(--chili);
-  color: var(--charcoal);
+  color: var(--white);
   box-shadow: var(--shadow);
 }
 
 .btn-primary:hover {
   background: var(--chili-dark);
-  box-shadow: 0 16px 30px -12px rgba(13, 20, 25, 0.45);
+  box-shadow: 0 16px 30px -12px rgba(6, 20, 23, 0.45);
 }
 
 .btn-ghost {
@@ -188,7 +188,7 @@ section {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(251, 244, 230, 0.92);
+  background: rgba(198, 191, 187, 0.92);
   backdrop-filter: saturate(140%) blur(8px);
   border-bottom: 1px solid var(--line);
 }
@@ -353,6 +353,10 @@ section {
   color: var(--cream);
 }
 
+.problem .eyebrow {
+  color: var(--turmeric);
+}
+
 .problem .section-sub {
   color: var(--cream-card);
 }
@@ -378,14 +382,14 @@ section {
 .problem-item:hover {
   transform: translateY(-4px);
   background: rgba(255, 253, 248, 0.1);
-  border-color: var(--chili);
+  border-color: var(--turmeric);
 }
 
 .problem-item svg {
   width: 26px;
   height: 26px;
   flex: none;
-  color: var(--chili);
+  color: var(--turmeric);
 }
 
 .problem-item h3 {
@@ -429,7 +433,7 @@ section {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: #f5e6c8;
+  background: #e2ebee;
   color: var(--chili-dark);
   margin-bottom: 14px;
 }
@@ -470,7 +474,7 @@ section {
 
 .example-frame:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px -16px rgba(13, 20, 25, 0.4);
+  box-shadow: 0 20px 40px -16px rgba(6, 20, 23, 0.4);
 }
 
 .browser-chrome {
@@ -546,7 +550,7 @@ section {
 }
 
 .price-card.featured:hover {
-  box-shadow: 0 20px 40px -16px rgba(13, 20, 25, 0.55);
+  box-shadow: 0 20px 40px -16px rgba(6, 20, 23, 0.55);
 }
 
 .price-card.featured h3,
@@ -564,7 +568,7 @@ section {
   top: -13px;
   left: 24px;
   background: var(--chili);
-  color: var(--charcoal);
+  color: var(--white);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -637,7 +641,7 @@ section {
 }
 
 .price-card.featured .price-features svg {
-  color: var(--chili);
+  color: var(--turmeric);
 }
 
 .pricing-note {
@@ -685,7 +689,7 @@ section {
   height: 38px;
   border-radius: 50%;
   background: var(--chili);
-  color: var(--charcoal);
+  color: var(--white);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.1rem;
@@ -743,7 +747,7 @@ section {
   font-weight: 500;
   font-size: 1.2rem;
   margin-top: 14px;
-  color: var(--chili);
+  color: var(--charcoal);
 }
 
 /* ---------- faq ---------- */
@@ -854,13 +858,13 @@ section {
 .footer-links svg {
   width: 18px;
   height: 18px;
-  color: var(--chili);
+  color: var(--turmeric);
 }
 
 .footer-fine {
   margin-top: 20px;
   font-size: 0.8rem;
-  color: #7c8b93;
+  color: var(--cream-card);
 }
 
 /* ---------- sticky mobile CTA bar ---------- */
@@ -873,7 +877,7 @@ section {
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   background: var(--white);
   border-top: 1px solid var(--line);
-  box-shadow: 0 -8px 20px -12px rgba(13, 20, 25, 0.3);
+  box-shadow: 0 -8px 20px -12px rgba(6, 20, 23, 0.3);
 }
 
 .sticky-cta .btn {
